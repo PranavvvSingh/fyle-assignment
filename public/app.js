@@ -10,6 +10,7 @@ const spinner = document.querySelector("#loading")
 const currPage = document.querySelector("#currentPage")
 const reposPerPage = document.getElementById("reposPerPage")
 let currentTag = document.querySelector("#currentTag")
+
 let currentPage = 1
 let perPage = 10
 let totalPages = 100
@@ -20,8 +21,10 @@ const getUser = async (username, page) => {
    const response = await fetch(url + username)
    const data = await response.json()
    console.log(data)
+   currentPage = 1
+   resetButtonStyles()
    totalPages = Math.ceil(data.public_repos / perPage)
-   console.log(data.public_repos)
+   console.log(totalPages)
 
    const profileDiv = `
          <div class="d-flex justify-content-center">
@@ -52,7 +55,6 @@ const getRepositories = async (username, page) => {
       url + username + "/repos" + `?page=${page}&per_page=${perPage}`,
    )
    const data = await response.json()
-   // repos = document.querySelector("#repos")
    const repoDiv = (repository) => `
             <div class="col-5 border border-2 border-black p-3 rounded-2 shadow">
                <div class="d-flex justify-content-between">
@@ -89,12 +91,13 @@ const getRepositories = async (username, page) => {
 }
 
 const getNextPage = () => {
-   if (currPage <= totalPages) {
+   if (currentPage < totalPages) {
       currentPage++
       currPage.textContent = currentPage
       while (repos.firstChild) repos.removeChild(repos.firstChild)
       getRepositories(username, currentPage)
       profile.scrollIntoView(false)
+      setButtonStyles()
    }
 }
 
@@ -104,8 +107,27 @@ const getPreviousPage = () => {
       currPage.textContent = currentPage
       while (repos.firstChild) repos.removeChild(repos.firstChild)
       getRepositories(username, currentPage)
+      profile.scrollIntoView(false)
+      setButtonStyles() 
    }
-   profile.scrollIntoView(false)
+}
+
+const setButtonStyles = () => {
+   if(currentPage === 1)
+      document.getElementById("prevButton").classList.add("text-body-secondary")
+   else
+      document.getElementById("prevButton").classList.remove("text-body-secondary")
+   
+   if(currentPage === totalPages)
+      document.getElementById("nextButton").classList.add("text-body-secondary")
+   else
+      document.getElementById("nextButton").classList.remove("text-body-secondary")
+}
+
+const resetButtonStyles = () => {
+   currPage.textContent = currentPage
+   document.getElementById("prevButton").classList.add("text-body-secondary")
+   document.getElementById("nextButton").classList.remove("text-body-secondary")
 }
 
 document.getElementById("prevPage").addEventListener("click", () => {
