@@ -10,25 +10,21 @@ This project is a web application that displays the public Github repositories b
 
 ## Run Locally
 
-Clone the project
+1. Download the zip file and extract the folder.
 
-```bash
-  git clone https://github.com/PranavvvSingh/fyle-assignment
-```
-
-Go to the project directory
+2. Go to the project directory
 
 ```bash
   cd fyle-assignment-main
 ```
 
-Install dependencies
+3. Install dependencies
 
 ```bash
   npm install local-web-server
 ```
 
-Start the server
+4. Start the server
 
 ```bash
   ws
