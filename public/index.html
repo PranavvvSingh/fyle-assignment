@@ -30,6 +30,10 @@
             <span class="visually-hidden">Loading...</span>
          </div>
       </div>
+      <!-- no user found -->
+      <div id="userError" class="text-center fs-1 py-5 d-none text-secondary ">
+         <i class="bi bi-person-x"></i> User Not Found
+      </div>
       <div id="content">
          <div id="profile" class="w-75 mx-auto">
             <!-- profile div -->
@@ -41,10 +45,15 @@
                <input id="searchRepo" type="text" class="form-control" placeholder="Search Respository" aria-label="Username"
                   aria-describedby="basic-addon1" value="">
             </div>
-            <span class="text-secondary ">Show Respositories:
+            <span class="text-secondary">Show Respositories:
             <input id="reposPerPage" class="rounded-1 border ms-1 text-center text-secondary" type="number" min="10" max="100"
                value="10">
             </span>
+         </div>
+
+         <!-- no repository found error -->
+         <div id="repoError" class="text-center fs-5 py-3 d-none mb-5 text-secondary ">
+            <i class="bi bi-ban"></i> No Repository Found
          </div>
 
          <div class="w-75 mx-auto">
@@ -52,11 +61,11 @@
                <!-- repos div  -->
             </div>
          </div>
-         <nav aria-label="Page navigation example">
+         <nav id="nav" aria-label="Page navigation example">
             <ul class="pagination  justify-content-center">
-               <li class="page-item" id="prevPage"><a class="page-link text-body-secondary" id="prevButton">←Previous</a></li>
+               <li class="page-item" id="prevPage"><a id="prevButton" class="page-link text-secondary">←Previous</a></li>
                <li class="page-item"><a class="page-link" id="currentPage">1</a></li>
-               <li class="page-item" id="nextPage"><a class="page-link" id="nextButton">Next→</a></li>
+               <li class="page-item" id="nextPage"><a id="nextButton" class="page-link">Next→</a></li>
             </ul>
          </nav>
       </div>

@@ -1,7 +1,7 @@
 const url = "https://api.github.com/users/"
 const searchUrl = "https://api.github.com/search/repositories?"
 
-let username = "egoist"
+let username = "egoist" // default user
 const content = document.querySelector("#content")
 const profile = document.querySelector("#profile")
 const repos = document.querySelector("#repos")
@@ -23,12 +23,19 @@ const getUser = async (username, page) => {
    displayLoader(true)
    const response = await fetch(url + username)
    const data = await response.json()
+   if (response.status === 404) {
+      displayLoader(false)
+      content.style.display = "none"
+      document.getElementById("userError").classList.remove("d-none")
+      return
+   }
+
    searchRepo.value = ""
+   searchQuery = ""
    currentPage = 1
    resetButtonStyles()
    totalPages = Math.ceil(data.public_repos / perPage)
    publicReposCount = data.public_repos
-   // console.log("total public repos : ",publicReposCount)
 
    const profileDiv = `
       <div class="d-flex justify-content-center">
@@ -56,12 +63,19 @@ const getRepositories = async (username, page, query = null) => {
 
    if (query) {
       totalPages = Math.ceil(data.total_count / perPage)
-      // console.log(data.total_count)
       data = data.items
    } else {
       totalPages = Math.ceil(publicReposCount / perPage)
    }
-   // console.log(totalPages)
+   if (data.length === 0){
+      document.getElementById("repoError").classList.remove("d-none")
+      document.getElementById("nav").classList.add("d-none")
+   } 
+   else{
+      document.getElementById("repoError").classList.add("d-none")
+      document.getElementById("nav").classList.remove("d-none")
+   } 
+   // console.log("total pages ", totalPages)
 
    const repoDiv = (repository) => `
             <div class="col-5 border border-2 border-black p-3 rounded-2 shadow">
@@ -113,7 +127,6 @@ const getNextPage = () => {
    if (currentPage < totalPages) {
       currentPage++
       currPage.textContent = currentPage
-      // while (repos.firstChild) repos.removeChild(repos.firstChild)
       getRepositories(username, currentPage, searchQuery)
       profile.scrollIntoView(false)
       setButtonStyles()
@@ -124,7 +137,6 @@ const getPreviousPage = () => {
    if (currentPage > 1) {
       currentPage--
       currPage.textContent = currentPage
-      // while (repos.firstChild) repos.removeChild(repos.firstChild)
       getRepositories(username, currentPage, searchQuery)
       profile.scrollIntoView(false)
       setButtonStyles()
@@ -132,39 +144,35 @@ const getPreviousPage = () => {
 }
 
 const setButtonStyles = () => {
+
    if (currentPage === 1)
-      document.getElementById("prevButton").classList.add("text-body-secondary")
+      document.getElementById("prevButton").classList.add("text-secondary")
    else
-      document
-         .getElementById("prevButton")
-         .classList.remove("text-body-secondary")
+      document.getElementById("prevButton").classList.remove("text-secondary")
 
    if (currentPage === totalPages)
-      document.getElementById("nextButton").classList.add("text-body-secondary")
+      document.getElementById("nextButton").classList.add("text-secondary")
    else
-      document
-         .getElementById("nextButton")
-         .classList.remove("text-body-secondary")
+      document.getElementById("nextButton").classList.remove("text-secondary")
 }
 
 const resetButtonStyles = () => {
    currPage.textContent = currentPage
-   document.getElementById("prevButton").classList.add("text-body-secondary")
-   document.getElementById("nextButton").classList.remove("text-body-secondary")
+   document.getElementById("prevButton").classList.add("text-secondary")
+   document.getElementById("nextButton").classList.remove("text-secondary")
 }
 
 document.getElementById("prevPage").addEventListener("click", () => {
-   // console.log("prev clicked")
    getPreviousPage()
 })
 
 document.getElementById("nextPage").addEventListener("click", () => {
-   // console.log("next clicked")
    getNextPage()
 })
 
 const formSubmit = () => {
    if (search.value !== "") {
+      document.getElementById("userError").classList.add("d-none")
       // console.log(search.value)
       username = search.value
       getUser(username)
@@ -183,7 +191,6 @@ reposPerPage.addEventListener("change", () => {
    reposPerPage.value = newPerPage
    perPage = newPerPage
    displayLoader(true)
-   // while (repos.firstChild) repos.removeChild(repos.firstChild)
    getRepositories(username, currentPage, searchQuery)
 })
 
