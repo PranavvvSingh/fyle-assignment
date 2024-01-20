@@ -1,4 +1,5 @@
 const url = "https://api.github.com/users/"
+const searchUrl = "https://api.github.com/search/repositories?"
 
 let username = "egoist"
 const content = document.querySelector("#content")
@@ -9,52 +10,59 @@ const searchButton = document.querySelector("#button")
 const spinner = document.querySelector("#loading")
 const currPage = document.querySelector("#currentPage")
 const reposPerPage = document.getElementById("reposPerPage")
+const searchRepo = document.getElementById("searchRepo")
 let currentTag = document.querySelector("#currentTag")
+let publicReposCount = 0
 
 let currentPage = 1
 let perPage = 10
 let totalPages = 100
+let searchQuery = null
 
 const getUser = async (username, page) => {
-   content.style.display = "none"
-   spinner.style.display = "block"
+   displayLoader(true)
    const response = await fetch(url + username)
    const data = await response.json()
-   console.log(data)
+   searchRepo.value = ""
    currentPage = 1
    resetButtonStyles()
    totalPages = Math.ceil(data.public_repos / perPage)
-   console.log(totalPages)
+   publicReposCount = data.public_repos
+   // console.log("total public repos : ",publicReposCount)
 
    const profileDiv = `
-         <div class="d-flex justify-content-center">
-            <img src="${data.avatar_url}" class="rounded-circle" style="width:200px;height:200px" alt="">
-            <div class="d-flex flex-column justify-content-evenly ps-5" style="width:320px;height:200px">
-               <h2>${data.name}</h2>
-               <i>${data.bio}</i>
-               <h6><i class="bi bi-geo-alt-fill me-1"></i>${data.location}</h6>
-               <h6><i class="bi bi-twitter-x me-1"></i>${data.twitter_username}</h6>
-               <h6><i class="bi bi-github me-1"></i>${data.html_url}</h6>
-            </div>
+      <div class="d-flex justify-content-center">
+         <img src="${data.avatar_url}" class="rounded-circle" style="width:200px;height:200px" alt="">
+         <div class="d-flex flex-column justify-content-evenly ps-5" style="width:320px;height:200px">
+            <h2>${data.name}</h2>
+            <i>${data.bio}</i>
+            <h6><i class="bi bi-geo-alt-fill me-1"></i>${data.location}</h6>
+            <h6><i class="bi bi-twitter-x me-1"></i>${data.twitter_username}</h6>
+            <h6><i class="bi bi-github me-1"></i>${data.html_url}</h6>
          </div>
-         <div class="d-flex justify-content-between align-items-center p-5">
-            <div class="input-group w-25">
-               <span class="input-group-text bg-primary-subtle" id="basic-addon1"><i class="bi bi-search"></i></span>
-               <input type="text" class="form-control" placeholder="Search Respository" aria-label="Username" aria-describedby="basic-addon1">
-            </div>
-            <input class="rounded-1 border fs-5 text-center text-secondary" type="number" id="reposPerPage" min="10" max="100" value="${perPage}">
-         </div>      
+      </div>
          `
    profile.innerHTML = profileDiv
    while (repos.firstChild) repos.removeChild(repos.firstChild)
-   getRepositories(username, page)
+   getRepositories(username, page, searchQuery)
 }
 
-const getRepositories = async (username, page) => {
-   const response = await fetch(
-      url + username + "/repos" + `?page=${page}&per_page=${perPage}`,
-   )
-   const data = await response.json()
+const getRepositories = async (username, page, query=null) => {
+   const finalUrl = query
+      ? `${searchUrl}q=user:${username}+${query}&page=${page}&per_page=${perPage}`
+      : url + username + "/repos" + `?page=${page}&per_page=${perPage}`
+   const response = await fetch(finalUrl)
+   let data = await response.json()
+   
+   if(query){
+      totalPages = Math.ceil(data.total_count / perPage )
+      // console.log(data.total_count)
+      data = data.items
+   }else{
+      totalPages = Math.ceil(publicReposCount / perPage)
+   } 
+   // console.log(totalPages)
+
    const repoDiv = (repository) => `
             <div class="col-5 border border-2 border-black p-3 rounded-2 shadow">
                <div class="d-flex justify-content-between">
@@ -83,19 +91,31 @@ const getRepositories = async (username, page) => {
                </div>
             </div>
    `
+   while (repos.firstChild) repos.removeChild(repos.firstChild)
    data.forEach((repo) => {
       repos.innerHTML += repoDiv(repo)
    })
-   spinner.style.display = "none"
-   content.style.display = "block"
+   displayLoader(false)
+   setButtonStyles()
+}
+
+const displayLoader = (status) => {
+   if(status){
+      content.style.display = "none"
+      spinner.style.display = "block"
+   }
+   else{
+      spinner.style.display = "none"
+      content.style.display = "block"
+   }
 }
 
 const getNextPage = () => {
    if (currentPage < totalPages) {
       currentPage++
       currPage.textContent = currentPage
-      while (repos.firstChild) repos.removeChild(repos.firstChild)
-      getRepositories(username, currentPage)
+      // while (repos.firstChild) repos.removeChild(repos.firstChild)
+      getRepositories(username, currentPage, searchQuery)
       profile.scrollIntoView(false)
       setButtonStyles()
    }
@@ -105,19 +125,27 @@ const getPreviousPage = () => {
    if (currentPage > 1) {
       currentPage--
       currPage.textContent = currentPage
-      while (repos.firstChild) repos.removeChild(repos.firstChild)
-      getRepositories(username, currentPage)
+      // while (repos.firstChild) repos.removeChild(repos.firstChild)
+      getRepositories(username, currentPage, searchQuery)
       profile.scrollIntoView(false)
-      setButtonStyles() 
+      setButtonStyles()
    }
 }
 
 const setButtonStyles = () => {
-   if(currentPage === 1) document.getElementById("prevButton").classList.add("text-body-secondary")
-   else document.getElementById("prevButton").classList.remove("text-body-secondary")
-   
-   if(currentPage === totalPages) document.getElementById("nextButton").classList.add("text-body-secondary")
-   else document.getElementById("nextButton").classList.remove("text-body-secondary")
+   if (currentPage === 1)
+      document.getElementById("prevButton").classList.add("text-body-secondary")
+   else
+      document
+         .getElementById("prevButton")
+         .classList.remove("text-body-secondary")
+
+   if (currentPage === totalPages)
+      document.getElementById("nextButton").classList.add("text-body-secondary")
+   else
+      document
+         .getElementById("nextButton")
+         .classList.remove("text-body-secondary")
 }
 
 const resetButtonStyles = () => {
@@ -127,18 +155,18 @@ const resetButtonStyles = () => {
 }
 
 document.getElementById("prevPage").addEventListener("click", () => {
-   console.log("preview clicked")
+   // console.log("prev clicked")
    getPreviousPage()
 })
 
 document.getElementById("nextPage").addEventListener("click", () => {
-   console.log("next clicked")
+   // console.log("next clicked")
    getNextPage()
 })
 
 const formSubmit = () => {
    if (search.value !== "") {
-      console.log(search.value)
+      // console.log(search.value)
       username = search.value
       getUser(username)
    }
@@ -150,10 +178,22 @@ document.getElementById("form").addEventListener("submit", function (event) {
 })
 searchButton.addEventListener("click", formSubmit)
 
-// document.getElementById("reposPerPage").addEventListener("input", function () {
-//    const reposPerPage = document.getElementById("reposPerPage")
-//    perPage = parseInt(reposPerPage.value, 10)
-//    getRepositories(username, currentPage)
-// })
+
+reposPerPage.addEventListener("change", () => {
+   let newPerPage = parseInt(reposPerPage.value, 10)
+   newPerPage = Math.min(Math.max(newPerPage, 10), 100)
+   reposPerPage.value = newPerPage
+   perPage = newPerPage
+   while (repos.firstChild) repos.removeChild(repos.firstChild)
+   getRepositories(username, currentPage, searchQuery)
+})
+
+searchRepo.addEventListener("change", () => {
+   searchQuery = searchRepo.value
+   currentPage = 1
+   currPage.textContent = currentPage
+   getRepositories(username, currentPage, searchQuery)
+})
+
 
 getUser(username, currentPage)

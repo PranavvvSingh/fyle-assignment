@@ -34,6 +34,19 @@
          <div id="profile" class="w-75 mx-auto">
             <!-- profile div -->
          </div>
+         <!-- search and repos per page  -->
+         <div class="w-75 mx-auto d-flex justify-content-between align-items-center p-5">
+            <div class="input-group w-25">
+               <span class="input-group-text bg-primary-subtle" id="basic-addon1"><i class="bi bi-search"></i></span>
+               <input id="searchRepo" type="text" class="form-control" placeholder="Search Respository" aria-label="Username"
+                  aria-describedby="basic-addon1" value="">
+            </div>
+            <span class="text-secondary ">Show Respositories:
+            <input id="reposPerPage" class="rounded-1 border ms-1 text-center text-secondary" type="number" min="10" max="100"
+               value="10">
+            </span>
+         </div>
+
          <div class="w-75 mx-auto">
             <div id="repos" class="row d-flex justify-content-around gy-5 mb-5 ">
                <!-- repos div  -->

@@ -1,15 +1,19 @@
-<div class="d-flex justify-content-center mb-5">
-   <img src="${data.avatar_url}" class="rounded-circle" style="width:250px;height:250px" alt="">
-   <div class="d-flex flex-column justify-content-evenly ps-5" style="width:500px;height:200px">
-      <h3>${data.name}</h3>
-      <p>${data.bio}</p>
-      <h6>${data.location}</h6>
-      <h6>Twitter: ${data.twitter_username}</h6>
+<div class="d-flex justify-content-center">
+   <img src="${data.avatar_url}" class="rounded-circle" style="width:200px;height:200px" alt="">
+   <div class="d-flex flex-column justify-content-evenly ps-5" style="width:320px;height:200px">
+      <h2>${data.name}</h2>
+      <i>${data.bio}</i>
+      <h6><i class="bi bi-geo-alt-fill me-1"></i>${data.location}</h6>
+      <h6><i class="bi bi-twitter-x me-1"></i>${data.twitter_username}</h6>
+      <h6><i class="bi bi-github me-1"></i>${data.html_url}</h6>
    </div>
 </div>
-<div class="d-flex justify-content-center gap-1">
-   <i class="fa-brands fa-square-github" style="vertical-align: middle;line-height: 27px;font-size:25px;"></i>
-   <h5 class="mb-5 text-center ">${data.html_url}</h5>
-</div>
-<div id="repos" class="row d-flex justify-content-around gy-5 mb-5 ">
+<div class="d-flex justify-content-between align-items-center p-5">
+   <div class="input-group w-25">
+      <span class="input-group-text bg-primary-subtle" id="basic-addon1"><i class="bi bi-search"></i></span>
+      <input type="text" class="form-control" placeholder="Search Respository" aria-label="Username"
+         aria-describedby="basic-addon1">
+   </div>
+   <input class="rounded-1 border fs-5 text-center text-secondary" type="number" id="reposPerPage" min="10" max="100"
+      value="${perPage}">
 </div>
