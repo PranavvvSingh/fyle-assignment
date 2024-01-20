@@ -29,7 +29,7 @@ const getUser = async (username, page) => {
       document.getElementById("userError").classList.remove("d-none")
       return
    }
-
+   // re-intializing default values for each user
    searchRepo.value = ""
    searchQuery = ""
    currentPage = 1
@@ -67,6 +67,7 @@ const getRepositories = async (username, page, query = null) => {
    } else {
       totalPages = Math.ceil(publicReposCount / perPage)
    }
+   // displaying no repository found error message
    if (data.length === 0){
       document.getElementById("repoError").classList.remove("d-none")
       document.getElementById("nav").classList.add("d-none")
@@ -82,29 +83,21 @@ const getRepositories = async (username, page, query = null) => {
                <div class="d-flex justify-content-between">
                <h5 class="d-inline-block text-primary">${repository.name}</h5>
                <div class="d-flex justify-content-center gap-3">
-                  <i class="fa-solid fa-code-branch" style="vertical-align: middle;line-height: 30px;letter-spacing: .2rem;">${
-                     repository.forks_count
-                  }</i>
-                  <i class="fa-solid fa-star" style="vertical-align: middle;line-height: 30px; letter-spacing: .2rem;">${
-                     repository.stargazers_count
-                  }</i>
+                  <i class="fa-solid fa-code-branch" style="vertical-align: middle;line-height: 30px;letter-spacing: .2rem;">${repository.forks_count}</i>
+                  <i class="fa-solid fa-star" style="vertical-align: middle;line-height: 30px; letter-spacing: .2rem;">${repository.stargazers_count}</i>
                </div>
                </div>
                <p class="mt-2">${repository.description}</p>
                <div id="topics" class="d-flex flex-wrap justify-content-start gap-2">
-            ${
-               repository.topics && repository.topics.length > 0
-                  ? repository.topics
-                       .map(
-                          (topic) =>
+            ${repository.topics && repository.topics.length > 0
+                  ? repository.topics.map((topic) =>
                              `<button type="button" class="btn btn-primary btn-sm">${topic}</button>`,
-                       )
-                       .join("")
+                       ).join("")
                   : '<span class="fw-light">No topics available</span>'
             }
                </div>
             </div>
-   `
+         `
    while (repos.firstChild) repos.removeChild(repos.firstChild)
    data.forEach((repo) => {
       repos.innerHTML += repoDiv(repo)
@@ -113,6 +106,7 @@ const getRepositories = async (username, page, query = null) => {
    setButtonStyles()
 }
 
+// function to toggle loading state
 const displayLoader = (status) => {
    if (status) {
       content.style.display = "none"
@@ -143,6 +137,7 @@ const getPreviousPage = () => {
    }
 }
 
+// edge cases for first and last page
 const setButtonStyles = () => {
 
    if (currentPage === 1)
@@ -170,10 +165,10 @@ document.getElementById("nextPage").addEventListener("click", () => {
    getNextPage()
 })
 
+// handling new github user input
 const formSubmit = () => {
    if (search.value !== "") {
       document.getElementById("userError").classList.add("d-none")
-      // console.log(search.value)
       username = search.value
       getUser(username)
    }
