@@ -13,7 +13,7 @@ This project is a web application that displays the public Github repositories b
 
 ## Demo
 
-Link to demo: https://github.com/PranavvvSingh/fyle-assignment
+Link to demo: https://pranavvvsingh.github.io/fyle-assignment/
 
 
 ## Run Locally
