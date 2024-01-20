@@ -1,7 +1,7 @@
 const url = "https://api.github.com/users/"
 const searchUrl = "https://api.github.com/search/repositories?"
 
-let username = "egoist" // default user
+let username = "homanp" // default user
 const content = document.querySelector("#content")
 const profile = document.querySelector("#profile")
 const repos = document.querySelector("#repos")
