@@ -4,8 +4,16 @@
 ## Overview
 This project is a web application that displays the public Github repositories belonging to a specific user. The design focuses on providing a clean and user-friendly interface, utilizing HTML, CSS, JavaScript, and Bootstrap for the front-end components.
 
+## Features
 
+- Github REST API Integration
+- Server-side Pagination
+- Search Bar for filtering repositories
+- Loading Indicators
 
+## Demo
+
+Link to demo: https://github.com/PranavvvSingh/fyle-assignment
 
 
 ## Run Locally
@@ -30,16 +38,4 @@ This project is a web application that displays the public Github repositories b
   ws
 ```
 
-
-## Demo
-
-Link to demo: https://github.com/PranavvvSingh/fyle-assignment
-
-
-## Features
-
-- Github REST API Integration
-- Server-side Pagination
-- Search Bar for filtering repositories
-- Loading Indicators
 
