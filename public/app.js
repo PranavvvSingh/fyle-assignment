@@ -47,20 +47,20 @@ const getUser = async (username, page) => {
    getRepositories(username, page, searchQuery)
 }
 
-const getRepositories = async (username, page, query=null) => {
+const getRepositories = async (username, page, query = null) => {
    const finalUrl = query
       ? `${searchUrl}q=user:${username}+${query}&page=${page}&per_page=${perPage}`
       : url + username + "/repos" + `?page=${page}&per_page=${perPage}`
    const response = await fetch(finalUrl)
    let data = await response.json()
-   
-   if(query){
-      totalPages = Math.ceil(data.total_count / perPage )
+
+   if (query) {
+      totalPages = Math.ceil(data.total_count / perPage)
       // console.log(data.total_count)
       data = data.items
-   }else{
+   } else {
       totalPages = Math.ceil(publicReposCount / perPage)
-   } 
+   }
    // console.log(totalPages)
 
    const repoDiv = (repository) => `
@@ -100,11 +100,10 @@ const getRepositories = async (username, page, query=null) => {
 }
 
 const displayLoader = (status) => {
-   if(status){
+   if (status) {
       content.style.display = "none"
       spinner.style.display = "block"
-   }
-   else{
+   } else {
       spinner.style.display = "none"
       content.style.display = "block"
    }
@@ -178,13 +177,13 @@ document.getElementById("form").addEventListener("submit", function (event) {
 })
 searchButton.addEventListener("click", formSubmit)
 
-
 reposPerPage.addEventListener("change", () => {
    let newPerPage = parseInt(reposPerPage.value, 10)
    newPerPage = Math.min(Math.max(newPerPage, 10), 100)
    reposPerPage.value = newPerPage
    perPage = newPerPage
-   while (repos.firstChild) repos.removeChild(repos.firstChild)
+   displayLoader(true)
+   // while (repos.firstChild) repos.removeChild(repos.firstChild)
    getRepositories(username, currentPage, searchQuery)
 })
 
@@ -194,6 +193,5 @@ searchRepo.addEventListener("change", () => {
    currPage.textContent = currentPage
    getRepositories(username, currentPage, searchQuery)
 })
-
 
 getUser(username, currentPage)
