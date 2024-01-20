@@ -113,15 +113,11 @@ const getPreviousPage = () => {
 }
 
 const setButtonStyles = () => {
-   if(currentPage === 1)
-      document.getElementById("prevButton").classList.add("text-body-secondary")
-   else
-      document.getElementById("prevButton").classList.remove("text-body-secondary")
+   if(currentPage === 1) document.getElementById("prevButton").classList.add("text-body-secondary")
+   else document.getElementById("prevButton").classList.remove("text-body-secondary")
    
-   if(currentPage === totalPages)
-      document.getElementById("nextButton").classList.add("text-body-secondary")
-   else
-      document.getElementById("nextButton").classList.remove("text-body-secondary")
+   if(currentPage === totalPages) document.getElementById("nextButton").classList.add("text-body-secondary")
+   else document.getElementById("nextButton").classList.remove("text-body-secondary")
 }
 
 const resetButtonStyles = () => {
